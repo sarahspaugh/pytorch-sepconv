@@ -1,0 +1,24 @@
+
+----------------
+getting running
+----------------
+- code as borrowed - will need to install CUDA, CuPy to run
+- current data processing script on our and prev developer's sides don't really mesh super cleanly (very different ways of indexing the data)
+	- splitting into X/Y training dictionaries vs into a simpler list of triples
+- made changes in the database init file TorchDB.py, need to propogate through other files 
+
+
+
+
+--------------
+Amazon computing
+--------------
+sarah doesn't have access/know what's been done here
+
+
+
+
+--------------
+pre-training data processing
+--------------
+- todo: make a new script that cuts video files into the "training" videos and the "test" videos, and saves them in sub-directories accordingly
