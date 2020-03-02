@@ -36,22 +36,31 @@ def load_video(vid_list, num_frames, frame_start_list, seed = 1):
         pbar.close()
     return frame_dict
 
-def create_dataset(frame_dict, crop_size, split_params, verify_movement = True, n_frame=1, seed=1, display=False):
+def create_tr_dataset(frame_dict, crop_size, verify_movement = True, n_frame=1, seed=1, display=False):
     #frame_dict is the dictionary from load_video
     #crop_size is the size that you want your dataset to be cropped to (d_y,d_x)
-    #split_params is a tuple representing the fractional breakdown of your data into (train, dev, test)
+    #split_params is a tuple representing the fractional breakdown of your data into (train, dev, test) (moving to outside function)
     #verify_movement is a boolean that turns optical flow checking on and off
     #n_frame is the number of random cropped subframes that you want generated from each video frame 
     
     np.random.seed(seed)
-    test_X, test_Y, train_X, train_Y, dev_X, dev_Y = {}, {}, {}, {}, {}, {}
+    train_dict = {}
+    #test_X, test_Y, train_X, train_Y, dev_X, dev_Y = {}, {}, {}, {}, {}, {}
     
     key_list = list(frame_dict.keys())
+    
+    training_key = 0
     
     np.random.shuffle(key_list)
     for i in tqdm(range(len(key_list))):
         frame = frame_dict[key_list[i]]
         
+        
+        for j in range(n_frame):
+            train_dict[str(training_key)] = find_crop(frame, crop_size, display)
+            training_key += 1
+        
+        """
         if(i<split_params[0]*len(key_list)):
             for j in range(n_frame):
                 train_X[key_list[i]+"_"+str(j)], train_Y[key_list[i]+"_"+str(j)] = find_crop(frame, crop_size, display)
@@ -63,8 +72,10 @@ def create_dataset(frame_dict, crop_size, split_params, verify_movement = True, 
         else:
             for j in range(n_frame):
                 test_X[key_list[i]+"_"+str(j)], test_Y[key_list[i]+"_"+str(j)] = find_crop(frame, crop_size, display)
+                
+        """
 
-    return test_X, test_Y, train_X, train_Y, dev_X, dev_Y
+    return train_dict
 
 
 def find_crop(frame, crop_size, display, verify_movement=True, attempt_max = 100, threshold = 30000, ):
@@ -85,7 +96,8 @@ def find_crop(frame, crop_size, display, verify_movement=True, attempt_max = 100
         t_frame_Y = frame[c_y:crop_size[0]+c_y,c_x:crop_size[1]+c_x,:,-1]
         
         if(verify_movement==False):
-            return t_frame_X, t_frame_Y
+            t_frame = np.stack((t_frame_X, t_frame_Y), axis=3)
+            return t_frame
         
         mov = min(check_movement(t_frame_X[:,:,:,0], t_frame_Y[:,:,:]), check_movement(t_frame_X[:,:,:,1], t_frame_Y[:,:,:]))
         
@@ -95,13 +107,15 @@ def find_crop(frame, crop_size, display, verify_movement=True, attempt_max = 100
         if(mov>threshold):
             if(display):
                 show_frame(t_frame_X, t_frame_Y)
-            return t_frame_X, t_frame_Y
+            t_frame = np.stack((t_frame_X, t_frame_Y), axis=3)
+            return t_frame
         
         attempts+=1
         if(attempts==attempt_max):
             if(display):
                 show_frame(max_frame_X, max_frame_Y)
-            return max_frame_X, max_frame_Y
+            t_frame = np.stack((max_frame_X, max_frame_Y), axis=3)
+            return t_frame
         
 #basic motion detection for now, uses the norm of the difference of the two images
 def check_movement(f1, f2):

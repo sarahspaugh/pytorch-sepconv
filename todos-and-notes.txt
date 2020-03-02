@@ -7,6 +7,9 @@ getting running
 	- splitting into X/Y training dictionaries vs into a simpler list of triples
 - made changes in the database init file TorchDB.py, need to propogate through other files 
 
+1/3/2020 17:29
+- changed data_import.py to output a single training dictionary with frames stacked in 1,3,2 order 
+- changed TorchDB to pull 3 frames from the training dictionary in the get_item function and to call data_import functions to set up training database
 
 
 

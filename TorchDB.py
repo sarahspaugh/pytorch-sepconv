@@ -39,14 +39,11 @@ class DBreader_frame_interpolation(Dataset):
         
         self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
 
-        frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
+        self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
 
-        test_x, test_y, self.train_x, self.train_y, dev_x, dev_y = create_dataset(frame_dict, resize, split_params, verify_movement = True, n_frame, seed = 1, display = False)
+        self.train_data = create_dataset(frame_dict, resize, verify_movement = True, n_frame, seed = 1, display = False)
         
-        self.x_list = list(self.train_x.keys())
-        self.y_list = list(self.train_y.keys())
-        
-        self.file_len = len(self.y_list) # idk if this is what we want for this variable
+        self.file_len = num_frames*n_frame
 
         """
         self.triplet_list = np.array([(db_dir + '/' + f) for f in listdir(db_dir) if isdir(join(db_dir, f))])
@@ -57,7 +54,12 @@ class DBreader_frame_interpolation(Dataset):
     
     def __getitem__(self, index):
         
-        frame0 = self.transform(Image.open(self.
+        frame = self.train_data[str(index)]
+        
+        frame0 = self.transform(frame[:,:,:,0])
+        frame1 = self.transform(frame[:,:,:,2])
+        frame2 = self.transform(frame[:,:,:,1])
+        
         """
         frame0 = self.transform(Image.open(self.triplet_list[index] + "/frame0.png"))
         frame1 = self.transform(Image.open(self.triplet_list[index] + "/frame1.png"))
