@@ -3,9 +3,9 @@ from os import listdir
 from os.path import join, isdir
 import pickle
 from tqdm import tqdm
-import ~\data_import
+import ~/data_import
 
-
+# need to make sure this folder exists with videos whenever data is to be sorted
 rawdata_dir = './put_all_video_here'
 
 test_dir = './test_db'
@@ -40,8 +40,15 @@ def sort_dataset(num_frames, frame_start_list, tr_split):
 	os.makedirs(test_dir)
 	os.makedirs(train_dir)
 
-	# need to save train_dict into train_dir and test into test
-	
+	pickle_test = open(test_dir+"/db.pickle", "wb")
+	pickle.dump(test_dict, pickle_test)
+	pickle_test.close()
+
+	pickle_train = open(train_dir+'/db.pickle', "wb")
+	pickle.dump(train_dict, pickle_train)
+	pickle_test.close()
+
+
 
 
 

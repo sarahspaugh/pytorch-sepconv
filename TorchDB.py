@@ -37,10 +37,12 @@ class DBreader_frame_interpolation(Dataset):
             transforms.ToTensor()
         ])
         
-        #this line now obsolete:
-        self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
         # this line now obsolete:
-        self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
+        # self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
+        # this line now obsolete:
+        # self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
+        
+        for f in listdir(db_dir
 
         self.train_data = create_dataset(frame_dict, resize, verify_movement = True, n_frame, seed = 1, display = False)
         
