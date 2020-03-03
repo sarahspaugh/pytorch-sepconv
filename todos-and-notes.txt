@@ -7,9 +7,26 @@ getting running
 	- splitting into X/Y training dictionaries vs into a simpler list of triples
 - made changes in the database init file TorchDB.py, need to propogate through other files 
 
+~~~~~~~~~~~~~~~~~
 1/3/2020 17:29
 - changed data_import.py to output a single training dictionary with frames stacked in 1,3,2 order 
 - changed TorchDB to pull 3 frames from the training dictionary in the get_item function and to call data_import functions to set up training database
+
+~~~~~~~~~~~~~~~~~
+3/3/2020 14:30
+making changes again to how we handle data flow (for the last time)
+
+pseudocode:
+start with a bunch of unprocessed videos in a particular directory that always stays the same
+read the videos into [a] frame dictionary[ies?] having ben's basic frame dict structure
+divide the frame dictionary (s) into training dictionaries and test dictionaries
+pickle them into new directory locations (train file and test file)
+
+from train/test code, unpickle the frame dictionaries and do any necessary cropping/frame level processing
+train or test or whatever
+
+
+when finished should we also delete the pickled frame dictionaries and always be starting with those files not in our master directory? maybe :shrug:
 
 
 
@@ -25,3 +42,10 @@ sarah doesn't have access/know what's been done here
 pre-training data processing
 --------------
 - todo: make a new script that cuts video files into the "training" videos and the "test" videos, and saves them in sub-directories accordingly
+- will need to update code in train.py, test.py, & possibly others to reflect new locations of data
+
+
+--------------
+test code
+--------------
+need to update test.py, middlebury.py once we figure out how we're handling dataaaa
