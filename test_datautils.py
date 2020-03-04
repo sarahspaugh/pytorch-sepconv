@@ -1,6 +1,6 @@
 from TorchDB import DBreader_frame_interpolation
 from datautils import sort_dataset, data_import
-
+import torch
 
 # setup to try using various data processing fn's
 num_frames = 30

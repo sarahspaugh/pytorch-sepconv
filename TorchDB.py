@@ -46,7 +46,7 @@ class DBreader_frame_interpolation(Dataset):
             train_pickle = open(f, 'rb')
             frame_dict = pickle.load(train_pickle)
 
-        self.train_data = create_dataset(frame_dict, resize, verify_movement = True, n_frame, seed = 1, display = True)
+        self.train_data = data_import.create_dataset(frame_dict, resize, True, n_frame, seed=1, display = True)
         
         self.file_len = num_frames*n_frame
 
