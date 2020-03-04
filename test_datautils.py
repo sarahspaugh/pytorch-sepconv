@@ -8,4 +8,6 @@ frame_start_list = [300]
 db_dir = './train_db'
 n_frame = 1
 
-dataset = DBreader_frame_interpolation(db_dir, )
+sort_dataset(num_frames, frame_start_list, 0.9)
+dataset = DBreader_frame_interpolation(db_dir, num_frames, frame_start_list, n_frame, resize = (128, 128))
+
