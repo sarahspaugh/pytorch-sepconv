@@ -42,7 +42,9 @@ class DBreader_frame_interpolation(Dataset):
         # this line now obsolete:
         # self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
         
-        for f in listdir(db_dir
+        for f in listdir(db_dir):
+            train_pickle = open(f, 'rb')
+            frame_dict = pickle.load(train_pickle)
 
         self.train_data = create_dataset(frame_dict, resize, verify_movement = True, n_frame, seed = 1, display = False)
         

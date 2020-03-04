@@ -11,7 +11,7 @@ from TestModule import Middlebury_other
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
-parser.add_argument('--train', type=str, default='./db')
+parser.add_argument('--train', type=str, default='./train_db')
 parser.add_argument('--kernel', type=int, default=51)
 parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)

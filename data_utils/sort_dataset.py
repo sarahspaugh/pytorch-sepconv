@@ -3,7 +3,7 @@ from os import listdir
 from os.path import join, isdir
 import pickle
 from tqdm import tqdm
-import ~/data_import
+import data_import
 
 # need to make sure this folder exists with videos whenever data is to be sorted
 rawdata_dir = './put_all_video_here'
