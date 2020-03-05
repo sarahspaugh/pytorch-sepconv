@@ -36,7 +36,9 @@ class DBreader_frame_interpolation(Dataset):
         
         self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
         
+        ##### here we need to turn the training video into a dictionary of arrays, preferably indexed by number, with the sets of 3 frames stacked along axis 4
         self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
+        #######d
         
         self.file_len = len(list(self.frame_dict.keys()))
 

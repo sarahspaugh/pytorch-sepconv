@@ -84,10 +84,7 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
         pbar.close()
     return frame_dict
 
-def load_tr_video(vid_list, seed=1):
-# this load video function is only for turning the training video bunch of frames into a dictionary because we can't use the normal one anymore
-    for i in range(len(vid_list)):
-        
+
 
 def find_crop(frame, crop_size, display = True, verify_movement=True, attempt_max = 100, threshold = 30000):
     #frame is a matrix that should be (f_x, f_y, 3, 3) containing [F1, F3, F2] stacked along axis 4
