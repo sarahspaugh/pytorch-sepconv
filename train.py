@@ -11,14 +11,17 @@ from TestModule import Middlebury_other
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
-parser.add_argument('--train', type=str, default='./db')
+parser.add_argument('--video_in', type=str, default='./raw_vid_db')
+parser.add_argument('--train', type=str, default='./train_db')
 parser.add_argument('--kernel', type=int, default=51)
 parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)
 parser.add_argument('--batch_size', type=int, default=4)
 parser.add_argument('--load_model', type=str, default=None)
-parser.add_argument('--test_input', type=str, default='./Interpolation_testset/input')
-parser.add_argument('--gt', type=str, default='./Interpolation_testset/gt')
+parser.add_argument('--test', type=str, default='./test_db')
+parser.add_argument('--dev', type=str, default='./dev_db')
+parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
+parser.add_argument('--s_list', type=int, default=[(500, 505), (500, 505)])
 
 transform = transforms.Compose([transforms.ToTensor()])
 
@@ -30,8 +33,38 @@ def to_variable(x):
 
 
 def main():
+
+    # first a bunch of directory manipulation 
     args = parser.parse_args()
-    db_dir = args.train
+    train_db = args.train
+    test_db = args.test
+    dev_db = args.dev
+    input_dir = args.video_in
+
+    if not os.path.exists(input_dir):
+        raise directoryError("input directory name not specified correctly")
+
+    raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir) if os.path.isfile(f)]
+
+    if (len(raw_vid_list) = 0):
+        raise directoryError("pls check input directory")
+
+    # split raw video to separate directories for train/dev/test
+    # if the directories already exist with old video, clear them out to start fresh
+    
+    for d in [train_db, test_db, dev_db]:
+        if not os.path.exists(d):
+            os.makedirs(d)
+        else for f in os.listdir(d):
+            f_path = os.path.join(d, f)
+            try:
+                if os.path.isfile(f_path) or os.path.islink(f_path):
+                    os.unlink(f_path)
+                elif os.path.isdir(f_path):
+                    shutil.rmtree(f_path)
+            except Exception as e:
+                print('Failed to clear directories' % (f_path, e))
+
 
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
@@ -43,13 +76,20 @@ def main():
     if not os.path.exists(ckpt_dir):
         os.makedirs(ckpt_dir)
 
+    splits = args.splits
+    segment_list = args.s_list
+
+    # import and sort video data into appropriate datasets
+    data_import.split_video(raw_vid_list, input_dir, train_db, test_db, dev_db, segment_list, splits)
+
+    # start log file
     logfile = open(args.out_dir + '/log.txt', 'w')
     logfile.write('batch_size: ' + str(args.batch_size) + '\n')
 
     total_epoch = args.epochs
     batch_size = args.batch_size
 
-    dataset = DBreader_frame_interpolation(db_dir, resize=(128, 128))
+    dataset = DBreader_frame_interpolation(train_db, resize=None)# leave resize as none here b/c we already did during sort
     train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     TestDB = Middlebury_other(args.test_input, args.gt)

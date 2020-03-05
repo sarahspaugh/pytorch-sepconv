@@ -6,21 +6,19 @@ import torch
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
-parser.add_argument('--input', type=str, default='./Interpolation_testset/input')
-parser.add_argument('--gt', type=str, default='./Interpolation_testset/gt')
+parser.add_argument('--test', type=str, default='./test_db')
 parser.add_argument('--output', type=str, default='./output_sepconv_pytorch_0/result')
 parser.add_argument('--checkpoint', type=str, default='./output_sepconv_pytorch_0/checkpoint/model_epoch010.pth')
 
 
 def main():
     args = parser.parse_args()
-    input_dir = args.input
-    gt_dir = args.gt
+    input_dir = args.test
     output_dir = args.output
     ckpt = args.checkpoint
 
     print("Reading Test DB...")
-    TestDB = Middlebury_other(input_dir, gt_dir)
+    TestDB = Middlebury_other(input_dir)
     print("Loading the Model...")
     checkpoint = torch.load(ckpt)
     kernel_size = checkpoint['kernel_size']

@@ -12,7 +12,7 @@ from matplotlib.pyplot import imshow
 def array_to_vid(a, output_directory, output_name):
     skvideo.io.vwrite(output_directory+output_name+".mp4", a)
 
-def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
+def split_video(vid_list, input_dir, train_dir, test_dir, dev_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     frame_dict = load_video(vid_list, input_dir, segment_list)
     train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
 
@@ -47,9 +47,9 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
                     test_vid = np.concatenate((test_vid, c_frame), axis=0)
                     
     print(train_vid.shape)
-    array_to_vid(train_vid, output_dir, "train_data")
-    array_to_vid(dev_vid, output_dir, "dev_data")
-    array_to_vid(test_vid, output_dir, "test_data")
+    array_to_vid(train_vid, train_dir, "train_data")
+    array_to_vid(dev_vid, dev_dir, "dev_data")
+    array_to_vid(test_vid, test_dir, "test_data")
 
 
 
@@ -76,13 +76,15 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
         while(success and f_num<num_frames+3):
             f_id = vid_list[i]+"_f"+str(f_num-3)
             frame_dict[f_id] = np.stack((i1,i3,i2), axis=0)
-            i3 = i2
+            i3 = i2 # what is this
             i2 = i1
             success, i1 = vidcap.read()
             f_num+=1
             pbar.update(1)
         pbar.close()
     return frame_dict
+
+
 
 def find_crop(frame, crop_size, display = True, verify_movement=True, attempt_max = 100, threshold = 30000):
     #frame is a matrix that should be (f_x, f_y, 3, 3) containing [F1, F3, F2] stacked along axis 4
