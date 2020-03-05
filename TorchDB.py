@@ -37,16 +37,12 @@ class DBreader_frame_interpolation(Dataset):
             transforms.ToTensor()
         ])
         
-        # this line now obsolete:
-        # self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
-        # this line now obsolete:
-        # self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
         
-        for f in listdir(db_dir
-
-        self.train_data = create_dataset(frame_dict, resize, verify_movement = True, n_frame, seed = 1, display = False)
+        self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(db_dir) if os.path.isfile(f)]
         
-        self.file_len = num_frames*n_frame
+        self.frame_dict = data_import.load_video(vid_list, num_frames, frame_start_list, seed = 1)
+        
+        self.file_len = len(list(self.frame_dict.keys()))
 
         """
         self.triplet_list = np.array([(db_dir + '/' + f) for f in listdir(db_dir) if isdir(join(db_dir, f))])
@@ -57,7 +53,9 @@ class DBreader_frame_interpolation(Dataset):
     
     def __getitem__(self, index):
         
-        frame = self.train_data[str(index)]
+        key_list = self.frame_dict.keys()
+        key = key_list[index]
+        frame = self.frame_dict[key]
         
         frame0 = self.transform(frame[:,:,:,0])
         frame1 = self.transform(frame[:,:,:,2])
