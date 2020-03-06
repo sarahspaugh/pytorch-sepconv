@@ -2,17 +2,20 @@ import cv2
 print(cv2.__version__)
 import numpy as np
 import h5py
+import matplotlib
+matplotlib.use('PS')
 import matplotlib.pyplot as plt
 from PIL import Image
 from tqdm import tqdm
-import skvideo.io
+import skvideo
 skvideo.setFFmpegPath('/Users/benjaminfearon/anaconda/envs/py36/lib/python3.6/site-packages')
+import skvideo.io
 from matplotlib.pyplot import imshow
 
 def array_to_vid(a, output_directory, output_name):
     skvideo.io.vwrite(output_directory+output_name+".mp4", a)
 
-def split_video(vid_list, input_dir, train_dir, test_dir, dev_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
+def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     frame_dict = load_video(vid_list, input_dir, segment_list)
     train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
 
@@ -47,9 +50,9 @@ def split_video(vid_list, input_dir, train_dir, test_dir, dev_dir, segment_list,
                     test_vid = np.concatenate((test_vid, c_frame), axis=0)
                     
     print(train_vid.shape)
-    array_to_vid(train_vid, train_dir, "train_data")
-    array_to_vid(dev_vid, dev_dir, "dev_data")
-    array_to_vid(test_vid, test_dir, "test_data")
+    array_to_vid(train_vid, output_dir[0], "train_data")
+    array_to_vid(dev_vid, output_dir[1], "dev_data")
+    array_to_vid(test_vid, output_dir[2], "test_data")
 
 
 
@@ -65,11 +68,12 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
         
         for j in tqdm(range(segment_list[i][0])):
             success, i_waste = vidcap.read()
-            
+
         success, i1 = vidcap.read()
         success, i2 = vidcap.read()
         success, i3 = vidcap.read()
         i1, i2, i3 = np.asarray(i1), np.asarray(i2), np.asarray(i3)
+
         num_frames = segment_list[i][1]-segment_list[i][0]
 
         pbar = tqdm(total=(num_frames))
@@ -80,11 +84,35 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
             i2 = i1
             success, i1 = vidcap.read()
             f_num+=1
+
             pbar.update(1)
         pbar.close()
     return frame_dict
 
 
+def load_p_video(vid_name, input_directory):
+    #num_frames is a list of ints corresponding to the numbers of frames that you want to load from each clip
+    #frame_start list is a list of ints corresponding to the first frame you want to load from each clip 
+    #vid_list is a list of video file names without extensions (assumed to be mp4)
+    frame_dict = {}
+    f_num = 3
+    vidcap = cv2.VideoCapture(input_directory+vid_name+".mp4")
+        
+
+    success, i1 = vidcap.read()
+    success, i2 = vidcap.read()
+    success, i3 = vidcap.read()
+    i1, i2, i3 = np.asarray(i1), np.asarray(i2), np.asarray(i3)
+
+    while(success):
+        f_id = vid_name+"_f"+str(int((f_num-3)/3))
+        frame_dict[f_id] = np.stack((i1,i3,i2), axis=0)
+        success, i1 = vidcap.read()
+        success, i2 = vidcap.read()
+        success, i3 = vidcap.read()
+
+        f_num+=3
+    return frame_dict
 
 def find_crop(frame, crop_size, display = True, verify_movement=True, attempt_max = 100, threshold = 30000):
     #frame is a matrix that should be (f_x, f_y, 3, 3) containing [F1, F3, F2] stacked along axis 4
