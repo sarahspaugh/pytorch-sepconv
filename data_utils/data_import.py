@@ -90,13 +90,17 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
     return frame_dict
 
 
-def load_p_video(vid_name, input_directory):
+def load_p_video(input_directory):
     #num_frames is a list of ints corresponding to the numbers of frames that you want to load from each clip
     #frame_start list is a list of ints corresponding to the first frame you want to load from each clip 
-    #vid_list is a list of video file names without extensions (assumed to be mp4)
+    vidlist = listdir(input_directory)
+    if (len(vidlist)>0):
+        raise directoryError("more than one video in post-process directory")
+    vidname = vidlist[0]
+    
     frame_dict = {}
     f_num = 3
-    vidcap = cv2.VideoCapture(input_directory+vid_name+".mp4")
+    vidcap = cv2.VideoCapture(input_directory+vid_name)
         
 
     success, i1 = vidcap.read()

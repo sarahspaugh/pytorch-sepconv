@@ -32,9 +32,8 @@ class Middlebury_other:
         self.input1_list = []
         self.gt_list = []
 
-        self.vid_list = [".".join(f.split(".")[:-1]) for f in listdir(input_dir) if os.path.isfile(f)]
-        self.frame_dict = load_video(self.vid_list, input_dir, segment_list)
-        # ^^ right now that line is going to break because this function doesn't get segment_list passed in
+        self.frame_dict = load_p_video(input_dir)
+        
 
         self.fr_list = list(self.frame_dict.keys())
 
@@ -42,15 +41,15 @@ class Middlebury_other:
         for item in self.fr_list:
             frame = self.frame_dict[item]
 
-            first = frame[:,:,:,0]
-            second = frame[:,:,:,1]
-            groundtr = frame[:,:,:,2] # is this still the right order?
+            first = frame[0,:,:,:]
+            second = frame[1,:,:,:]
+            groundtr = frame[2,:,:,:] # switched to new frame stacking on 1st axis
 
             # I also don't know if we need the "to variable" bit. because we're kind of already doing that.
-            # setting axis to 3. hopefully that is the right one to get these back out of the million dim array the right way? 
-            self.input0_list.append(to_variable(self.transform(first).unsqueeze(0)), axis=3)
-            self.input1_list.append(to_variable(self.transform(second).unsqueeze(0)), axis=3)
-            self.gt_list.append(to_variable(self.transform(groundtr).unsqueeze(0)), axis=3)
+            # setting axis to 0 to match changes to other functions with stacked frames. idk if it's good
+            self.input0_list.append(to_variable(self.transform(first).unsqueeze(0)), axis=0)
+            self.input1_list.append(to_variable(self.transform(second).unsqueeze(0)), axis=0)
+            self.gt_list.append(to_variable(self.transform(groundtr).unsqueeze(0)), axis=0)
             # lololol
 
 
@@ -68,8 +67,8 @@ class Middlebury_other:
                 os.makedirs(output_dir + '/' + self.fr_list[idx])
             
             # this part should be fine, just pulling frames out of our newly constructed stacked arrays
-            frame_out = model(self.input0_list[:,:,:,idx], self.input1_list[:,:,:,idx])
-            gt = self.gt_list[:,:,:,idx]
+            frame_out = model(self.input0_list[idx,:,:,:], self.input1_list[idx,:,:,:])
+            gt = self.gt_list[idx,:,:,:]
 
             # checking goodness of interp
             psnr = -10 * log10(torch.mean((gt - frame_out) * (gt - frame_out)).item())

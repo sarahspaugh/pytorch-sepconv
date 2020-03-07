@@ -89,7 +89,7 @@ def main():
     total_epoch = args.epochs
     batch_size = args.batch_size
 
-    dataset = DBreader_frame_interpolation(train_db, resize=None)# leave resize as none here b/c we already did during sort
+    dataset = DBreader_frame_interpolation(train_db)# leave resize as none here b/c we already did during sort
     train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
     TestDB = Middlebury_other(args.test_input, args.gt)
