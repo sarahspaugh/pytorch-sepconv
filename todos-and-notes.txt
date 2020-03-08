@@ -2,6 +2,19 @@
 ----------------
 getting running
 ----------------
+
+
+
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+everything under here is old
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 - code as borrowed - will need to install CUDA, CuPy to run
 - current data processing script on our and prev developer's sides don't really mesh super cleanly (very different ways of indexing the data)
 	- splitting into X/Y training dictionaries vs into a simpler list of triples
@@ -30,22 +43,4 @@ when finished should we also delete the pickled frame dictionaries and always be
 
 
 
---------------
-Amazon computing
---------------
-sarah doesn't have access/know what's been done here
 
-
-
-
---------------
-pre-training data processing
---------------
-- todo: make a new script that cuts video files into the "training" videos and the "test" videos, and saves them in sub-directories accordingly
-- will need to update code in train.py, test.py, & possibly others to reflect new locations of data
-
-
---------------
-test code
---------------
-need to update test.py, middlebury.py once we figure out how we're handling dataaaa
