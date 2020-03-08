@@ -11,11 +11,13 @@ import skvideo
 skvideo.setFFmpegPath('../../usr/bin')
 import skvideo.io
 from matplotlib.pyplot import imshow
+import os
 
 def array_to_vid(a, output_directory, output_name):
     skvideo.io.vwrite(output_directory+'/'+output_name+".mp4", a)
 
 def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
+    
     frame_dict = load_video(vid_list, input_dir, segment_list)
     train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
     print(output_dir)
@@ -24,7 +26,6 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
 
     for i in tqdm(range(len(key_list))):
         frame = frame_dict[key_list[i]]
-
         if(i<split_params[0]*len(key_list)):
             for j in range(n_frame):
                 c_frame = find_crop(frame, crop_list[0])
@@ -94,14 +95,14 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
 def load_p_video(input_directory):
     #num_frames is a list of ints corresponding to the numbers of frames that you want to load from each clip
     #frame_start list is a list of ints corresponding to the first frame you want to load from each clip 
-    vidlist = listdir(input_directory)
-    if (len(vidlist)>0):
-        raise directoryError("more than one video in post-process directory")
-    vidname = vidlist[0]
-    
+    vidlist = os.listdir(input_directory)
+    if (len(vidlist)>1):
+        raise NameError("more than one video in post-process directory")
+    vid_name = vidlist[0]
+
     frame_dict = {}
     f_num = 3
-    vidcap = cv2.VideoCapture(input_directory+vid_name)
+    vidcap = cv2.VideoCapture(input_directory+'/'+vid_name)
         
 
     success, i1 = vidcap.read()

@@ -5,7 +5,8 @@ from math import log10
 from torchvision.utils import save_image as imwrite
 from torch.autograd import Variable
 import os
-import data_import
+from data_import import load_p_video
+import numpy as np
 
 
 def to_variable(x):
@@ -31,12 +32,10 @@ class Middlebury_other:
         self.input0_list = []
         self.input1_list = []
         self.gt_list = []
-
         self.frame_dict = load_p_video(input_dir)
         
 
         self.fr_list = list(self.frame_dict.keys())
-
         # during this next bit they were doing some kind of "unsqueeze" thing to their images. idk if we need or want this
         for item in self.fr_list:
             frame = self.frame_dict[item]
@@ -44,12 +43,17 @@ class Middlebury_other:
             first = frame[0,:,:,:]
             second = frame[1,:,:,:]
             groundtr = frame[2,:,:,:] # switched to new frame stacking on 1st axis
-
+            print(np.shape(first))
             # I also don't know if we need the "to variable" bit. because we're kind of already doing that.
             # setting axis to 0 to match changes to other functions with stacked frames. idk if it's good
-            self.input0_list.append(to_variable(self.transform(first).unsqueeze(0)), axis=0)
-            self.input1_list.append(to_variable(self.transform(second).unsqueeze(0)), axis=0)
-            self.gt_list.append(to_variable(self.transform(groundtr).unsqueeze(0)), axis=0)
+            if (np.ndim(self.input0_list) == 1):
+              self.input0_list = first
+              self.input1_list = second
+              self.gt_list = groundtr
+            else:
+              self.input0_list = np.concatenate((self.input0_list, first), axis=3)
+              self.input1_list = np.concatenate((self.input1_list, second), axis=3)
+              self.gt_list = np.concatenate((self.gt_list, groundtr), axis=3)
             # lololol
 
 
@@ -60,15 +64,16 @@ class Middlebury_other:
         
         # this part is probably going to be a trainwreck
         for idx in range(len(self.fr_list)):
-
+            print(idx)
             # this is where it writes the output file structure
             # need to figure out a better output file strucutre probably, because right now it's doing the stupid "subfolders of pictures" thing
             if not os.path.exists(output_dir + '/' + self.fr_list[idx]):
                 os.makedirs(output_dir + '/' + self.fr_list[idx])
             
             # this part should be fine, just pulling frames out of our newly constructed stacked arrays
-            frame_out = model(self.input0_list[idx,:,:,:], self.input1_list[idx,:,:,:])
-            gt = self.gt_list[idx,:,:,:]
+
+            frame_out = model(self.transform(self.input0_list[idx,:,:,:]), self.transform(self.input1_list[idx,:,:,:]))
+            gt = self.transform(self.gt_list[idx,:,:,:])
 
             # checking goodness of interp
             psnr = -10 * log10(torch.mean((gt - frame_out) * (gt - frame_out)).item())

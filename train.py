@@ -20,7 +20,7 @@ parser.add_argument('--batch_size', type=int, default=4)
 parser.add_argument('--load_model', type=str, default=None)
 parser.add_argument('--split_vid_out', type=str, default=['./train_db','./dev_db','./test_db'])
 parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
-parser.add_argument('--s_list', type=int, default=[(500, 505), (500, 505), (500, 505)])
+parser.add_argument('--s_list', type=int, default=[(500, 550), (500, 550), (500, 550)])
 
 transform = transforms.Compose([transforms.ToTensor()])
 
@@ -47,7 +47,7 @@ def main():
         raise NameError("input directory name not specified correctly")
 
     raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
-
+    print(raw_vid_list)
     if (len(raw_vid_list) == 0):
         raise NameError("pls check input directory")
 
@@ -92,7 +92,7 @@ def main():
     dataset = DBreader_frame_interpolation(train_db)# leave resize as none here b/c we already did during sort
     train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
-    TestDB = Middlebury_other(args.test_input, args.gt)
+    TestDB = Middlebury_other(test_db)
     test_output_dir = args.out_dir + '/result'
 
     if args.load_model is not None:
