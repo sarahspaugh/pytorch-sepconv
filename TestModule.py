@@ -43,17 +43,23 @@ class Middlebury_other:
             first = frame[0,:,:,:]
             second = frame[1,:,:,:]
             groundtr = frame[2,:,:,:] # switched to new frame stacking on 1st axis
-            print(np.shape(first))
-            # I also don't know if we need the "to variable" bit. because we're kind of already doing that.
+            
+            
+            shape1, shape2, shape3 = np.shape(first)[0], np.shape(first)[1], np.shape(first)[2]
+            first = np.reshape(first, (1,shape1, shape2, shape3))
+            second = np.reshape(second, (1, shape1, shape2, shape3))
+            groundtr = np.reshape(groundtr, (1, shape1, shape2, shape3))
+
+            # removed from each list item a call of "tovariable(blah blah blah) and .unsqueeze(0), see pre-forked repo for more details"
             # setting axis to 0 to match changes to other functions with stacked frames. idk if it's good
             if (np.ndim(self.input0_list) == 1):
               self.input0_list = first
               self.input1_list = second
               self.gt_list = groundtr
             else:
-              self.input0_list = np.concatenate((self.input0_list, first), axis=3)
-              self.input1_list = np.concatenate((self.input1_list, second), axis=3)
-              self.gt_list = np.concatenate((self.gt_list, groundtr), axis=3)
+              self.input0_list = np.concatenate((self.input0_list, first), axis=0)
+              self.input1_list = np.concatenate((self.input1_list, second), axis=0)
+              self.gt_list = np.concatenate((self.gt_list, groundtr), axis=0)
             # lololol
 
 
@@ -64,7 +70,7 @@ class Middlebury_other:
         
         # this part is probably going to be a trainwreck
         for idx in range(len(self.fr_list)):
-            print(idx)
+            
             # this is where it writes the output file structure
             # need to figure out a better output file strucutre probably, because right now it's doing the stupid "subfolders of pictures" thing
             if not os.path.exists(output_dir + '/' + self.fr_list[idx]):
