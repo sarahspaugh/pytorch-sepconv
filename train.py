@@ -7,11 +7,12 @@ import torch
 from torch.autograd import Variable
 import os
 from TestModule import Middlebury_other
+from data_import import split_video
 
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
-parser.add_argument('--video_in', type=str, default='../drive/My\ Drive/Colab\ Notebooks/raw_video/')
+parser.add_argument('--video_in', type=str, default='./../drive/My Drive/Colab Notebooks/raw_video/')
 parser.add_argument('--kernel', type=int, default=51)
 parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)
@@ -43,12 +44,12 @@ def main():
 
 
     if not os.path.exists(input_dir):
-        raise directoryError("input directory name not specified correctly")
+        raise NameError("input directory name not specified correctly")
 
-    raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir) if os.path.isfile(f)]
+    raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
 
     if (len(raw_vid_list) == 0):
-        raise directoryError("pls check input directory")
+        raise NameError("pls check input directory")
 
     # split raw video to separate directories for train/dev/test
     # if the directories already exist with old video, clear them out to start fresh
@@ -64,7 +65,7 @@ def main():
                         os.unlink(f_path)
                     elif os.path.isdir(f_path):
                         shutil.rmtree(f_path)
-                except directoryError:
+                except NameError:
                     print('Failed to clear directories')
 
 
@@ -79,7 +80,7 @@ def main():
         os.makedirs(ckpt_dir)
 
     # import and sort video data into appropriate datasets
-    data_import.split_video(raw_vid_list, input_dir, split_vid_out, segment_list, split_params)
+    split_video(raw_vid_list, input_dir, split_vid_out, segment_list, split_params)
 
     # start log file
     logfile = open(args.out_dir + '/log.txt', 'w')
