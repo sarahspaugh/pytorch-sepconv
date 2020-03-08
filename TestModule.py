@@ -45,7 +45,7 @@ class Middlebury_other:
             groundtr = frame[2,:,:,:] # switched to new frame stacking on 1st axis
             
             
-            shape1, shape2, shape3 = np.shape(first)[0], np.shape(first)[1], np.shape(first)[2]
+            self.shape1, self.shape2, self.shape3 = np.shape(first)[0], np.shape(first)[1], np.shape(first)[2]
             first = np.reshape(first, (1,shape1, shape2, shape3))
             second = np.reshape(second, (1, shape1, shape2, shape3))
             groundtr = np.reshape(groundtr, (1, shape1, shape2, shape3))
@@ -57,6 +57,8 @@ class Middlebury_other:
               self.input1_list = second
               self.gt_list = groundtr
             else:
+                # self.input0_list.append(to_variable(self.transform(Image.open(input_dir + '/' + item + '/frame10.png')).unsqueeze(0)))
+
               self.input0_list = np.concatenate((self.input0_list, first), axis=0)
               self.input1_list = np.concatenate((self.input1_list, second), axis=0)
               self.gt_list = np.concatenate((self.gt_list, groundtr), axis=0)
@@ -78,8 +80,10 @@ class Middlebury_other:
             
             # this part should be fine, just pulling frames out of our newly constructed stacked arrays
 
-            frame_out = model(self.transform(self.input0_list[idx,:,:,:]), self.transform(self.input1_list[idx,:,:,:]))
-            gt = self.transform(self.gt_list[idx,:,:,:])
+            # old line : frame_out = model(self.input0_list[idx], self.input1_list[idx])
+
+            frame_out = model(self.transform(np.reshape(self.input0_list[idx,:,:,:]), (1, self.shape1, self.shape2, self.shape3)), np.reshape(self.transform(self.input1_list[idx,:,:,:]),  (1, self.shape1, self.shape2, self.shape3))
+            gt = self.transform(np.reshape(self.gt_list[idx,:,:,:],  (1, self.shape1, self.shape2, self.shape3)))
 
             # checking goodness of interp
             psnr = -10 * log10(torch.mean((gt - frame_out) * (gt - frame_out)).item())
