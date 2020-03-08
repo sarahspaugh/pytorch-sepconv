@@ -11,7 +11,7 @@ from TestModule import Middlebury_other
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
-parser.add_argument('--video_in', type=str, default='./raw_vid_db')
+parser.add_argument('--video_in', type=str, default='../../content/drive/My\ Drive/Colab\ Notebooks/raw_video/')
 parser.add_argument('--kernel', type=int, default=51)
 parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)

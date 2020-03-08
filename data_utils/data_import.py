@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from tqdm import tqdm
 import skvideo
-skvideo.setFFmpegPath('/Users/benjaminfearon/anaconda/envs/py36/lib/python3.6/site-packages')
+skvideo.setFFmpegPath('usr/local/lib/python3.7/site-packages')
 import skvideo.io
 from matplotlib.pyplot import imshow
 
