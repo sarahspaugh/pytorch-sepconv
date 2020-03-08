@@ -4,7 +4,7 @@ from PIL import Image
 from os.path import join, isdir
 from torch.utils.data import Dataset
 from torchvision import transforms
-from data_utils import data_import
+import data_import
 
 class DBreader_frame_interpolation(Dataset):
     """
