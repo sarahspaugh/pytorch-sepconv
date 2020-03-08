@@ -13,12 +13,12 @@ import skvideo.io
 from matplotlib.pyplot import imshow
 
 def array_to_vid(a, output_directory, output_name):
-    skvideo.io.vwrite(output_directory+output_name+".mp4", a)
+    skvideo.io.vwrite(output_directory+'/'+output_name+".mp4", a)
 
 def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     frame_dict = load_video(vid_list, input_dir, segment_list)
     train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
-
+    print(output_dir)
     key_list = list(frame_dict.keys())
     np.random.shuffle(key_list)
 
@@ -49,7 +49,8 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
                 else:
                     test_vid = np.concatenate((test_vid, c_frame), axis=0)
                     
-    print(train_vid.shape)
+    print('train video ' + str(train_vid.shape))
+    print('test video ' + str(test_vid.shape))
     array_to_vid(train_vid, output_dir[0], "train_data")
     array_to_vid(dev_vid, output_dir[1], "dev_data")
     array_to_vid(test_vid, output_dir[2], "test_data")
