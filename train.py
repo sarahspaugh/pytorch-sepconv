@@ -12,14 +12,12 @@ parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
 # parameters
 parser.add_argument('--video_in', type=str, default='./raw_vid_db')
-parser.add_argument('--train', type=str, default='./train_db')
 parser.add_argument('--kernel', type=int, default=51)
 parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)
 parser.add_argument('--batch_size', type=int, default=4)
 parser.add_argument('--load_model', type=str, default=None)
-parser.add_argument('--test', type=str, default='./test_db')
-parser.add_argument('--dev', type=str, default='./dev_db')
+parser.add_argument('--split_vid_out', type=str, default=['./train_db','./dev_db','./test_db'])
 parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
 parser.add_argument('--s_list', type=int, default=[(500, 505), (500, 505)])
 
@@ -36,17 +34,20 @@ def main():
 
     # first a bunch of directory manipulation 
     args = parser.parse_args()
-    train_db = args.train
-    test_db = args.test
-    dev_db = args.dev
+    split_vid_out  = args.split_vid_out
+    train_db, dev_db, test_db = split_vid_out[0], split_vid_out[1], split_vid_out[2]
     input_dir = args.video_in
+
+    segment_list = args.s_list
+    split_params = args.splits
+
 
     if not os.path.exists(input_dir):
         raise directoryError("input directory name not specified correctly")
 
     raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir) if os.path.isfile(f)]
 
-    if (len(raw_vid_list) = 0):
+    if (len(raw_vid_list) == 0):
         raise directoryError("pls check input directory")
 
     # split raw video to separate directories for train/dev/test
@@ -76,11 +77,8 @@ def main():
     if not os.path.exists(ckpt_dir):
         os.makedirs(ckpt_dir)
 
-    splits = args.splits
-    segment_list = args.s_list
-
     # import and sort video data into appropriate datasets
-    data_import.split_video(raw_vid_list, input_dir, train_db, test_db, dev_db, segment_list, splits)
+    data_import.split_video(raw_vid_list, input_dir, split_vid_out, segment_list, split_params)
 
     # start log file
     logfile = open(args.out_dir + '/log.txt', 'w')

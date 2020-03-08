@@ -64,7 +64,7 @@ def load_video(vid_list, input_directory, segment_list, seed = 1):
     
     for i in range(len(vid_list)):
         f_num = 3
-        vidcap = cv2.VideoCapture(input_directory+vid_list[i]+".mp4")
+        vidcap = cv2.VideoCapture(input_directory+vid_list[i]+'.mp4')
         
         for j in tqdm(range(segment_list[i][0])):
             success, i_waste = vidcap.read()
