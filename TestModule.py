@@ -5,7 +5,7 @@ from math import log10
 from torchvision.utils import save_image as imwrite
 from torch.autograd import Variable
 import os
-from data_utils/data_import import load_video
+from data_utils import data_import
 
 
 def to_variable(x):

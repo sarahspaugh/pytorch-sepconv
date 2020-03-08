@@ -56,15 +56,16 @@ def main():
     for d in [train_db, test_db, dev_db]:
         if not os.path.exists(d):
             os.makedirs(d)
-        else for f in os.listdir(d):
-            f_path = os.path.join(d, f)
-            try:
-                if os.path.isfile(f_path) or os.path.islink(f_path):
-                    os.unlink(f_path)
-                elif os.path.isdir(f_path):
-                    shutil.rmtree(f_path)
-            except Exception as e:
-                print('Failed to clear directories' % (f_path, e))
+        else:
+            for f in os.listdir(d):
+                f_path = os.path.join(d, f)
+                try:
+                    if os.path.isfile(f_path) or os.path.islink(f_path):
+                        os.unlink(f_path)
+                    elif os.path.isdir(f_path):
+                        shutil.rmtree(f_path)
+                except directoryError:
+                    print('Failed to clear directories')
 
 
     if not os.path.exists(args.out_dir):
