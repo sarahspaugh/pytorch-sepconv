@@ -60,7 +60,7 @@ def main():
     # split raw video to separate directories for train/dev/test
     # if the directories already exist with old video, clear them out to start fresh
     
-    for d in split_vid_out:
+    for d in ['/train_db', '/test_db', '/dev_db']:
         print(d)
         if not os.path.exists(d):
             os.makedirs(d)
