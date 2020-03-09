@@ -18,7 +18,7 @@ parser.add_argument('--out_dir', type=str, default='./output_sepconv_pytorch')
 parser.add_argument('--epochs', type=int, default=10)
 parser.add_argument('--batch_size', type=int, default=4)
 parser.add_argument('--load_model', type=str, default=None)
-parser.add_argument('--split_vid_out', type=str, default=['./train_db','./dev_db','./test_db'])
+parser.add_argument('--split_vid_out', type=str, default=['/train_db','/dev_db','/test_db'])
 parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
 parser.add_argument('--s_list', type=int, default=[(500, 550), (500, 550), (500, 550)])
 
