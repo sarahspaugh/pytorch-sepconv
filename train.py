@@ -69,10 +69,7 @@ def main():
                 f_path = os.path.join(d, f)
                 print(f_path)
                 try:
-                    if os.path.isfile(f_path) or os.path.islink(f_path):
-                        os.unlink(f_path)
-                    elif os.path.isdir(f_path):
-                        shutil.rmtree(f_path)
+                    shutil.rmtree(f_path)
                 except NameError:
                     print('Failed to clear directories')
 
