@@ -41,7 +41,9 @@ class Middlebury_other:
             if not os.path.exists(output_dir + '/' + self.im_list[idx]):
                 os.makedirs(output_dir + '/' + self.im_list[idx])
 
-
+            print(self.input0_list)
+            print(idx)
+            
             frame_out = model(self.input0_list[idx], self.input1_list[idx])
             print(frame_out.shape())
             gt = self.gt_list[idx]
