@@ -65,13 +65,12 @@ def main():
         if not os.path.exists(d):
             os.makedirs(d)
         else:
-            for f in os.listdir(d):
-                f_path = os.path.join(d, f)
-                print(f_path)
-                try:
-                    shutil.rmtree(f_path)
-                except NameError:
-                    print('Failed to clear directories')
+            try:
+                shutil.rmtree(d)
+            except NameError:
+                print('failed to clear directories')
+            os.makedirs(d)
+            
 
 
     if not os.path.exists(args.out_dir):
