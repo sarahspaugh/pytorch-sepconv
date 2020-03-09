@@ -9,6 +9,7 @@ import os
 
 def to_variable(x):
     if torch.cuda.is_available():
+        print("torch cuda available")
         x = x.cuda()
     return Variable(x)
 
