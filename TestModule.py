@@ -43,10 +43,10 @@ class Middlebury_other:
 
             print(self.input0_list)
             print(idx)
+
+            frame_out = model(to_variable(self.input0_list[idx]), to_variable(self.input1_list[idx]))
             
-            frame_out = model(self.input0_list[idx], self.input1_list[idx])
-            print(frame_out.shape())
-            gt = self.gt_list[idx]
+            gt = to_variable(self.gt_list[idx])
             psnr = -10 * log10(torch.mean((gt - frame_out) * (gt - frame_out)).item())
             av_psnr += psnr
             imwrite(frame_out, output_dir + '/' + self.im_list[idx] + '/' + output_name, range=(0, 1))
