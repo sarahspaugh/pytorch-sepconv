@@ -40,7 +40,10 @@ class Middlebury_other:
         for idx in range(len(self.im_list)):
             if not os.path.exists(output_dir + '/' + self.im_list[idx]):
                 os.makedirs(output_dir + '/' + self.im_list[idx])
+
+
             frame_out = model(self.input0_list[idx], self.input1_list[idx])
+            print(frame_out.shape())
             gt = self.gt_list[idx]
             psnr = -10 * log10(torch.mean((gt - frame_out) * (gt - frame_out)).item())
             av_psnr += psnr
