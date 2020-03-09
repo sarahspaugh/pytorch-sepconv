@@ -92,7 +92,7 @@ def main():
     dataset = DBreader_frame_interpolation(train_db)# leave resize as none here b/c we already did during sort
     train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
-    TestDB = Middlebury_other(test_db)
+    TestDB = Middlebury_other(test_db+'/input', test_db+'/gt')
     test_output_dir = args.out_dir + '/result'
 
     if args.load_model is not None:

@@ -16,46 +16,94 @@ import os
 def array_to_vid(a, output_directory, output_name):
     skvideo.io.vwrite(output_directory+'/'+output_name+".mp4", a)
 
+def frstack_to_subdir(frame, subdir_name, output_dir):
+
+    subdirectory = output_dir + '/' + subdir_name + '/'
+    os.makedirs(subdirectory)
+
+    frame0 = frame[0,:,:,:]
+    frame2 = frame[1,:,:,:]
+    frame1 = frame[2,:,:,:]
+
+    Image.fromarray(frame0).save(subdirectory+'frame0.png')
+    Image.fromarray(frame1).save(subdirectory+'frame1.png')
+    Image.fromarray(frame2).save(subdirectory+'frame2.png')
+
+
+def frstack_to_testdir(frame, subdir_name, output_dir):
+
+    gt_dir = output_dir + '/gt/' + subdir_name + '/'
+    in_dir = output_dir + '/input/' + subdir_name + '/'
+
+    os.makedirs(gt_dir)
+    os.makedirs(in_dir)
+
+    frame10 = frame[0,:,:,:]
+    frame10i11 = frame[1,:,:,:]
+    frame11 = frame[2,:,:,:]
+
+    Image.fromarray(frame10).save(in_dir+'frame10.png')
+    Image.fromarray(frame10i11).save(gt_dir+'frame10i11.png')
+    Image.fromarray(frame11).save(in_dir+'frame11.png')
+
+
 def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     
     frame_dict = load_video(vid_list, input_dir, segment_list)
-    train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
+   # train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
     print(output_dir)
     key_list = list(frame_dict.keys())
     np.random.shuffle(key_list)
 
     for i in tqdm(range(len(key_list))):
         frame = frame_dict[key_list[i]]
+
         if(i<split_params[0]*len(key_list)):
             for j in range(n_frame):
                 c_frame = find_crop(frame, crop_list[0])
+
+                subdir_name = "triplet"+str(i)+str(j)
+                frstack_to_subdir(c_frame, subdir_name, output_dir[0])
+
+"""
                 if(np.ndim(train_vid)==1):
                     train_vid = c_frame
                 else:
                     train_vid = np.concatenate((train_vid, c_frame), axis=0)
+                    """
             
         elif(i<(split_params[0]+split_params[1])*len(key_list)):
             for j in range(n_frame):
                 c_frame = find_crop(frame, crop_list[1])
+
+                subdir_name = "triplet"+str(i)+str(j)
+                frstack_to_subdir(c_frame, subdir_name, output_dir[1])
+
+                """
                 if(np.ndim(dev_vid)==1):
                     dev_vid = c_frame
                 else:
                     dev_vid = np.concatenate((dev_vid, c_frame), axis=0)
+                    """
             
         else:
             for j in range(n_frame):
                 c_frame = find_crop(frame, crop_list[2])
+
+                subdir_name = "triplet"+str(i)+str(j)
+                frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+"""
                 if(np.ndim(test_vid)==1):
                     test_vid = c_frame
                 else:
                     test_vid = np.concatenate((test_vid, c_frame), axis=0)
-                    
-    print('train video ' + str(train_vid.shape))
-    print('test video ' + str(test_vid.shape))
+                    """
+
+"""
     array_to_vid(train_vid, output_dir[0], "train_data")
     array_to_vid(dev_vid, output_dir[1], "dev_data")
     array_to_vid(test_vid, output_dir[2], "test_data")
-
+"""
 
 
 def load_video(vid_list, input_directory, segment_list, seed = 1):
