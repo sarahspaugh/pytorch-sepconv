@@ -20,6 +20,9 @@ class Middlebury_eval:
 class Middlebury_other:
     def __init__(self, input_dir, gt_dir):
         self.im_list = os.listdir(input_dir)
+        print(input_dir)
+        print(gt_dir)
+        print(self.im_list)
         self.transform = transforms.Compose([transforms.ToTensor()])
 
         self.input0_list = []

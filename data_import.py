@@ -50,7 +50,7 @@ def frstack_to_testdir(frame, subdir_name, output_dir):
 def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     
     frame_dict = load_video(vid_list, input_dir, segment_list)
-   # train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
+    # train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
     print(output_dir)
     key_list = list(frame_dict.keys())
     np.random.shuffle(key_list)
@@ -65,12 +65,12 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
                 subdir_name = "triplet"+str(i)+str(j)
                 frstack_to_subdir(c_frame, subdir_name, output_dir[0])
 
-"""
+                """
                 if(np.ndim(train_vid)==1):
                     train_vid = c_frame
                 else:
                     train_vid = np.concatenate((train_vid, c_frame), axis=0)
-                    """
+                """
             
         elif(i<(split_params[0]+split_params[1])*len(key_list)):
             for j in range(n_frame):
@@ -84,7 +84,7 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
                     dev_vid = c_frame
                 else:
                     dev_vid = np.concatenate((dev_vid, c_frame), axis=0)
-                    """
+                """
             
         else:
             for j in range(n_frame):
@@ -92,12 +92,12 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
 
                 subdir_name = "triplet"+str(i)+str(j)
                 frstack_to_testdir(c_frame, subdir_name, output_dir[2])
-"""
+                """
                 if(np.ndim(test_vid)==1):
                     test_vid = c_frame
                 else:
                     test_vid = np.concatenate((test_vid, c_frame), axis=0)
-                    """
+                """
 
 """
     array_to_vid(train_vid, output_dir[0], "train_data")

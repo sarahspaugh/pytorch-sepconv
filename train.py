@@ -42,6 +42,12 @@ def main():
     segment_list = args.s_list
     split_params = args.splits
 
+    test_input_dir = test_db + '/input'
+    test_gt_dir = test_db + '/gt'
+
+    print(test_input_dir)
+    print(test_gt_dir)
+
 
     if not os.path.exists(input_dir):
         raise NameError("input directory name not specified correctly")
@@ -92,7 +98,7 @@ def main():
     dataset = DBreader_frame_interpolation(train_db)# leave resize as none here b/c we already did during sort
     train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
-    TestDB = Middlebury_other(test_db+'/input', test_db+'/gt')
+    TestDB = Middlebury_other(test_input_dir, test_gt_dir)
     test_output_dir = args.out_dir + '/result'
 
     if args.load_model is not None:
