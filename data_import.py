@@ -64,13 +64,6 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
 
                 subdir_name = "triplet"+str(i)+str(j)
                 frstack_to_subdir(c_frame, subdir_name, output_dir[0])
-
-                """
-                if(np.ndim(train_vid)==1):
-                    train_vid = c_frame
-                else:
-                    train_vid = np.concatenate((train_vid, c_frame), axis=0)
-                """
             
         elif(i<(split_params[0]+split_params[1])*len(key_list)):
             for j in range(n_frame):
@@ -79,32 +72,12 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
                 subdir_name = "triplet"+str(i)+str(j)
                 frstack_to_subdir(c_frame, subdir_name, output_dir[1])
 
-                """
-                if(np.ndim(dev_vid)==1):
-                    dev_vid = c_frame
-                else:
-                    dev_vid = np.concatenate((dev_vid, c_frame), axis=0)
-                """
-            
         else:
             for j in range(n_frame):
                 c_frame = find_crop(frame, crop_list[2])
 
                 subdir_name = "triplet"+str(i)+str(j)
                 frstack_to_testdir(c_frame, subdir_name, output_dir[2])
-                """
-                if(np.ndim(test_vid)==1):
-                    test_vid = c_frame
-                else:
-                    test_vid = np.concatenate((test_vid, c_frame), axis=0)
-                """
-
-"""
-    array_to_vid(train_vid, output_dir[0], "train_data")
-    array_to_vid(dev_vid, output_dir[1], "dev_data")
-    array_to_vid(test_vid, output_dir[2], "test_data")
-"""
-
 
 def load_video(vid_list, input_directory, segment_list, seed = 1):
     #num_frames is a list of ints corresponding to the numbers of frames that you want to load from each clip
