@@ -45,15 +45,10 @@ def main():
     test_input_dir = test_db + '/input'
     test_gt_dir = test_db + '/gt'
 
-    print(test_input_dir)
-    print(test_gt_dir)
-
-
     if not os.path.exists(input_dir):
         raise NameError("input directory name not specified correctly")
 
     raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
-    print(raw_vid_list)
     if (len(raw_vid_list) == 0):
         raise NameError("pls check input directory")
 
@@ -61,7 +56,6 @@ def main():
     # if the directories already exist with old video, clear them out to start fresh
     
     for d in split_vid_out:
-        print(d)
         if not os.path.exists(d):
             os.makedirs(d)
         else:

@@ -9,7 +9,6 @@ import os
 
 def to_variable(x):
     if torch.cuda.is_available():
-        print("torch cuda available")
         x = x.cuda()
     return Variable(x)
 
@@ -21,14 +20,12 @@ class Middlebury_eval:
 class Middlebury_other:
     def __init__(self, input_dir, gt_dir):
         self.im_list = os.listdir(input_dir)
-        print(input_dir)
-        print(gt_dir)
-        print(self.im_list)
         self.transform = transforms.Compose([transforms.ToTensor()])
 
         self.input0_list = []
         self.input1_list = []
         self.gt_list = []
+        
         for item in self.im_list:
             self.input0_list.append(to_variable(self.transform(Image.open(input_dir + '/' + item + '/frame10.png')).unsqueeze(0)))
             self.input1_list.append(to_variable(self.transform(Image.open(input_dir + '/' + item + '/frame11.png')).unsqueeze(0)))
@@ -41,9 +38,6 @@ class Middlebury_other:
         for idx in range(len(self.im_list)):
             if not os.path.exists(output_dir + '/' + self.im_list[idx]):
                 os.makedirs(output_dir + '/' + self.im_list[idx])
-
-            print(self.input0_list)
-            print(idx)
 
             frame_out = model(to_variable(self.input0_list[idx]), to_variable(self.input1_list[idx]))
             
