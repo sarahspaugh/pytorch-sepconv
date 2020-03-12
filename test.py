@@ -8,8 +8,8 @@ parser = argparse.ArgumentParser(description='SepConv Pytorch')
 # parameters
 parser.add_argument('--input', type=str, default='./test_db/input')
 parser.add_argument('--gt', type=str, default='./test_db/gt')
-parser.add_argument('--output', type=str, default='./output_sepconv_pytorch_0/result')
-parser.add_argument('--checkpoint', type=str, default='./output_sepconv_pytorch_0/checkpoint/model_epoch010.pth')
+parser.add_argument('--output', type=str, default='./output_sepconv_pytorch/result')
+parser.add_argument('--checkpoint', type=str, default='./output_sepconv_pytorch/checkpoint/model_epoch010.pth')
 
 
 def main():
