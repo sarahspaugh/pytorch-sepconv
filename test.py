@@ -30,7 +30,7 @@ def main():
     state_dict = checkpoint['state_dict']
 
 
-    model.load_state_dict(torch.as_tensor(state_dict))
+    model.load_state_dict(state_dict)
     model.epoch = checkpoint['epoch']
 
     print("Test Start...")
