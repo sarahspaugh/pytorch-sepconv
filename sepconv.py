@@ -2,11 +2,6 @@ import cupy
 import torch
 import re
 
-def to_variable(x):
-    if torch.cuda.is_available():
-        x = x.cuda()
-    return Variable(x)
-
 
 kernel_Sepconv_updateOutput = '''
     extern "C" __global__ void kernel_Sepconv_updateOutput(

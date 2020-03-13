@@ -21,7 +21,7 @@ parser.add_argument('--load_model', type=str, default=None)
 parser.add_argument('--split_vid_out', type=str, default=['./train_db','./dev_db','./test_db'])
 parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
 parser.add_argument('--s_list', type=int, default=[(500, 550), (500, 550), (500, 550)])
-parser.add_argument('--separate_test_set', type=bool, default=True) # if this is true, test video needs to be in /raw_video/test/ and the rest needs to be in /raw_video/gen
+parser.add_argument('--separate_test_set', type=bool, default=False) # if this is true, test video needs to be in /raw_video/test/ and the rest needs to be in /raw_video/gen
 parser.add_argument('--consecutive_test_set', type=bool, default=True)
 transform = transforms.Compose([transforms.ToTensor()])
 
