@@ -75,7 +75,7 @@ def split_video(input_dir, output_dir, segment_list, split_params, consecutive_t
 
         key_list = list(frame_dict.keys())
 
-        test_keys = key_list[ start_t_segment*len(key_list) : end_t_segment*len(key_list) ]
+        test_keys = key_list[ int(start_t_segment*len(key_list)) : int(end_t_segment*len(key_list)) ]
 
         test_frame_dict = {}
 
