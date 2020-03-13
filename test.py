@@ -29,9 +29,8 @@ def main():
     model = SepConvNet(kernel_size=kernel_size)
     state_dict = checkpoint['state_dict']
 
-    state_dict_json = json.dumps(state_dict)
 
-    model.load_state_dict(torch.load(json.loads(state_dict_json)))
+    model.load_state_dict(torch.as_tensor(state_dict))
     model.epoch = checkpoint['epoch']
 
     print("Test Start...")
