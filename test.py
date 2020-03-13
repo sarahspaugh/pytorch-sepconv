@@ -26,7 +26,7 @@ def main():
     checkpoint = torch.load(ckpt)
     kernel_size = checkpoint['kernel_size']
     model = SepConvNet(kernel_size=kernel_size)
-    state_dict = Path.as_posix(checkpoint['state_dict'])
+    state_dict = str(checkpoint['state_dict'])
     model.load_state_dict(torch.load(state_dict))
     model.epoch = checkpoint['epoch']
 
