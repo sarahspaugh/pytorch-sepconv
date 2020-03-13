@@ -204,7 +204,7 @@ def load_p_video(input_directory):
         f_num+=3
     return frame_dict
 
-def find_crop(frame, crop_size, display = True, verify_movement=True, attempt_max = 100, threshold = 30000):
+def find_crop(frame, crop_size, display = False, verify_movement=True, attempt_max = 100, threshold = 30000):
     #frame is a matrix that should be (f_x, f_y, 3, 3) containing [F1, F3, F2] stacked along axis 4
     #crop_size is the size of the region to be used for training (d_y, d_x)
     #attempt_max is the number of attempts to find a cropped image with sufficient movement between F1 and F3
