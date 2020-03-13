@@ -34,6 +34,9 @@ def main():
     model.epoch = checkpoint['epoch']
 
     print("Test Start...")
+    if torch.cuda.is_available():
+        model = model.cuda()
+        
     TestDB.Test(model, output_dir)
 
 
