@@ -2,6 +2,12 @@ import cupy
 import torch
 import re
 
+def to_variable(x):
+    if torch.cuda.is_available():
+        x = x.cuda()
+    return Variable(x)
+
+
 kernel_Sepconv_updateOutput = '''
     extern "C" __global__ void kernel_Sepconv_updateOutput(
         const int n,
@@ -230,6 +236,8 @@ class FunctionSepconv(torch.autograd.Function):
 
             # vertical grad
             n_v = gradVertical.nelement()
+
+            n_v = to_variable(n_v)
             cupy_launch('kernel_SeparableConvolution_updateGradVertical', cupy_kernel('kernel_SeparableConvolution_updateGradVertical', {
                 'gradLoss': gradOutput,
                 'input': input,
@@ -244,6 +252,8 @@ class FunctionSepconv(torch.autograd.Function):
 
             # horizontal grad
             n_h = gradHorizontal.nelement()
+
+            n_h = to_variable(n_h)
             cupy_launch('kernel_SeparableConvolution_updateGradHorizontal', cupy_kernel('kernel_SeparableConvolution_updateGradHorizontal', {
                 'gradLoss': gradOutput,
                 'input': input,
