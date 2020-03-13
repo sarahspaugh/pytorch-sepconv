@@ -13,6 +13,7 @@ import skvideo.io
 from matplotlib.pyplot import imshow
 import os
 
+
 def array_to_vid(a, output_directory, output_name):
     skvideo.io.vwrite(output_directory+'/'+output_name+".mp4", a)
 
@@ -47,14 +48,49 @@ def frstack_to_testdir(frame, subdir_name, output_dir):
     Image.fromarray(frame11).save(in_dir+'frame11.png')
 
 
-def split_video(vid_list, input_dir, output_dir, segment_list, split_params, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
+def split_video(input_dir, output_dir, segment_list, split_params, consecutive_test_set, separate_test_set, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     
-    frame_dict = load_video(vid_list, input_dir, segment_list)
-    # train_vid, dev_vid, test_vid = np.zeros(1), np.zeros(1), np.zeros(1)
-    print(output_dir)
+    # first determine if testing frames are coming from a separate subdirectory from oth
+    if separate_test_set:
+
+        input_main = input_dir + '/gen'
+        input_test = input_dir + '/test'
+
+        gen_vid_list =  [".".join(f.split(".")[:-1]) for f in os.listdir(input_main)]
+        test_vid_list =  [".".join(f.split(".")[:-1]) for f in os.listdir(input_test)]
+
+        frame_dict = load_video(gen_vid_list, input_main, segment_list)
+        test_frame_dict = load_video(test_vid_list, input_test, segment_list)
+
+    else:
+        vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
+
+        frame_dict = load_video(vid_list, input_dir, segment_list)
+
+
+    # if we need consecutive test frames from the main batch of frames, separate them to their own dictionary
+    if (not separate_test_set) and  consecutive_test_set:
+        start_t_segment = np.random.uniform(0.0, 1.0-split_params[2])
+        end_t_segment = start_t_segment + split_params[2]
+
+        key_list = list(frame_dict.keys())
+
+        test_keys = key_list[ start_t_segment*len(key_list) : end_t_segment*len(key_list) ]
+
+        test_frame_dict = {}
+
+        for i in tqdm(range(len(test_keys))):
+            test_frame_dict[test_keys[i]] = frame_dict[test_keys[i]]
+            del frame_dict[test_keys[i]]
+
+
+    # now anything in plain frame_dict can be shuffled safely
+
     key_list = list(frame_dict.keys())
     np.random.shuffle(key_list)
 
+    # loop through the main frame_dict
+    
     for i in tqdm(range(len(key_list))):
         frame = frame_dict[key_list[i]]
 
@@ -74,10 +110,37 @@ def split_video(vid_list, input_dir, output_dir, segment_list, split_params, cro
 
         else:
             for j in range(n_frame):
-                c_frame = find_crop(frame, crop_list[2])
 
                 subdir_name = "triplet"+str(i)+str(j)
-                frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+
+
+                # if we're building the test set out of the same frames, do that, else stick any extra frames into the training set
+                if separate_test_set:
+                    c_frame = find_crop(frame, crop_list[0])
+                    frstack_to_subdir(c_frame, subdir_name, output_dir[0])
+                else:
+                    c_frame = find_crop(frame, crop_list[2])
+                    frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+
+
+
+    # now loop through the separate "test" frame dict if it exists
+
+    if separate_test_set:
+
+        test_keys = list(test_frame_dict.keys())
+        # shuffle if we want shuffled test
+        if not consecutive_test_set:
+            np.random.shuffle(test_keys)
+
+        for i in tqdm(range(len(test_keys))):
+            frame = test_frame_dict[test_keys[i]]
+            c_frame = find_crop(frame, crop_list[2])
+            subdir_name = 'triplet_t'+str(i)
+
+            frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+
+
 
 def load_video(vid_list, input_directory, segment_list, seed = 1):
     #num_frames is a list of ints corresponding to the numbers of frames that you want to load from each clip

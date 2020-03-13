@@ -21,7 +21,8 @@ parser.add_argument('--load_model', type=str, default=None)
 parser.add_argument('--split_vid_out', type=str, default=['./train_db','./dev_db','./test_db'])
 parser.add_argument('--splits', type=float, default=(0.8, 0.1, 0.1))
 parser.add_argument('--s_list', type=int, default=[(500, 550), (500, 550), (500, 550)])
-
+parser.add_argument('--separate_test_set', type=bool, default=True) # if this is true, test video needs to be in /raw_video/test/ and the rest needs to be in /raw_video/gen
+parser.add_argument('--consecutive_test_set', type=bool, default=True)
 transform = transforms.Compose([transforms.ToTensor()])
 
 
@@ -45,12 +46,13 @@ def main():
     test_input_dir = test_db + '/input'
     test_gt_dir = test_db + '/gt'
 
+    separate_test_set = args.separate_test_set
+    consecutive_test_set = args.consecutive_test_set
+
     if not os.path.exists(input_dir):
         raise NameError("input directory name not specified correctly")
 
-    raw_vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
-    if (len(raw_vid_list) == 0):
-        raise NameError("pls check input directory")
+
 
     # split raw video to separate directories for train/dev/test
     # if the directories already exist with old video, clear them out to start fresh
@@ -78,7 +80,7 @@ def main():
         os.makedirs(ckpt_dir)
 
     # import and sort video data into appropriate datasets
-    split_video(raw_vid_list, input_dir, split_vid_out, segment_list, split_params)
+    split_video(input_dir, split_vid_out, segment_list, split_params, consecutive_test_set, separate_test_set)
 
     # start log file
     logfile = open(args.out_dir + '/log.txt', 'w')
