@@ -1,0 +1,13 @@
+things to test
+
+
+- trained on grainy vs smooth
+- trained on smooth animation vs smooth real-life video
+- optical flow:
+	- using more adv optical flow on grainy video for test, vs smooth animation
+		- adv optical flow package or could use "n>3" filtering for frame selection (avoid frozen frames)
+
+- need to test on separate video from mixed training set
+
+- messing with crop size as a hyperparameter
+
