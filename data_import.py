@@ -48,6 +48,7 @@ def frstack_to_testdir(frame, subdir_name, output_dir):
     Image.fromarray(frame11).save(in_dir+'frame11.png')
 
 
+
 def split_video(input_dir, output_dir, segment_list, split_params, consecutive_test_set, separate_test_set, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
     
     # first determine if testing frames are coming from a separate subdirectory from oth
@@ -63,9 +64,9 @@ def split_video(input_dir, output_dir, segment_list, split_params, consecutive_t
         test_frame_dict = load_video(test_vid_list, input_test, segment_list)
 
     else:
-        vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir)]
+        vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir + '/gen')]
 
-        frame_dict = load_video(vid_list, input_dir, segment_list)
+        frame_dict = load_video(vid_list, input_dir+'/gen/', segment_list)
 
 
     # if we need consecutive test frames from the main batch of frames, separate them to their own dictionary
@@ -204,7 +205,7 @@ def load_p_video(input_directory):
         f_num+=3
     return frame_dict
 
-def find_crop(frame, crop_size, display = False, verify_movement=True, attempt_max = 100, threshold = 30000):
+def find_crop(frame, crop_size, display = False, verify_movement=True, attempt_max = 100):
     #frame is a matrix that should be (f_x, f_y, 3, 3) containing [F1, F3, F2] stacked along axis 4
     #crop_size is the size of the region to be used for training (d_y, d_x)
     #attempt_max is the number of attempts to find a cropped image with sufficient movement between F1 and F3
@@ -231,12 +232,6 @@ def find_crop(frame, crop_size, display = False, verify_movement=True, attempt_m
 
         if(mov>max_mov):
             max_frame_X, max_frame_Y, max_mov = t_frame_X, t_frame_Y, mov       
-        
-        if(mov>threshold):
-            if(display):
-                show_frame(t_frame_X, t_frame_Y)
-            t_frame = np.concatenate((t_frame_X, t_frame_Y), axis=0)
-            return t_frame
         
         attempts+=1
         if(attempts==attempt_max):
