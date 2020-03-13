@@ -2,6 +2,7 @@ import argparse
 from TestModule import Middlebury_other
 from model import SepConvNet
 import torch
+from pathlib import Path
 
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
@@ -26,7 +27,7 @@ def main():
     kernel_size = checkpoint['kernel_size']
     model = SepConvNet(kernel_size=kernel_size)
     state_dict = checkpoint['state_dict']
-    model.load_state_dict(torch.load(state_dict))
+    model.load_state_dict(torch.load(state_dict.as_posix()))
     model.epoch = checkpoint['epoch']
 
     print("Test Start...")
