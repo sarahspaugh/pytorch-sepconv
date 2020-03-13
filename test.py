@@ -3,7 +3,7 @@ from TestModule import Middlebury_other
 from model import SepConvNet
 import torch
 from pathlib import Path
-import io
+import json
 
 parser = argparse.ArgumentParser(description='SepConv Pytorch')
 
@@ -27,8 +27,11 @@ def main():
     checkpoint = torch.load(ckpt)
     kernel_size = checkpoint['kernel_size']
     model = SepConvNet(kernel_size=kernel_size)
-    state_dict = io.BytesIO(checkpoint['state_dict'])
-    model.load_state_dict(torch.load(state_dict))
+    state_dict = checkpoint['state_dict']
+
+    state_dict_json = json.dumps(state_dict)
+
+    model.load_state_dict(torch.load(json.loads(state_dict_json)))
     model.epoch = checkpoint['epoch']
 
     print("Test Start...")
