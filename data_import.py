@@ -60,8 +60,8 @@ def split_video(input_dir, output_dir, segment_list, split_params, consecutive_t
         gen_vid_list =  [".".join(f.split(".")[:-1]) for f in os.listdir(input_main)]
         test_vid_list =  [".".join(f.split(".")[:-1]) for f in os.listdir(input_test)]
 
-        frame_dict = load_video(gen_vid_list, input_main, segment_list)
-        test_frame_dict = load_video(test_vid_list, input_test, segment_list)
+        frame_dict = load_video(gen_vid_list, input_main + '/', segment_list)
+        test_frame_dict = load_video(test_vid_list, input_test +'/', segment_list)
 
     else:
         vid_list = [".".join(f.split(".")[:-1]) for f in os.listdir(input_dir + '/gen')]
