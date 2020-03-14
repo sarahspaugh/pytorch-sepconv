@@ -50,7 +50,8 @@ def frstack_to_testdir(frame, subdir_name, output_dir):
 
 
 def split_video(input_dir, output_dir, segment_list, split_params, consecutive_test_set, separate_test_set, crop_list = [(150,150), (600,600), (600,600)], n_frame = 1):
-    
+    tl = (0,200)
+    ts = (600,800)
     # first determine if testing frames are coming from a separate subdirectory from oth
     if separate_test_set:
 
@@ -120,8 +121,9 @@ def split_video(input_dir, output_dir, segment_list, split_params, consecutive_t
                     c_frame = find_crop(frame, crop_list[0])
                     frstack_to_subdir(c_frame, subdir_name, output_dir[0])
                 else:
-                    c_frame = find_crop(frame, crop_list[2])
-                    frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+                    # c_frame = find_crop(frame, crop_list[2])
+                    frame = frame[:,tl[0]:tl[0]+ts[0], tl[1]:tl[1]+ts[1],:]
+                    frstack_to_testdir(frame, subdir_name, output_dir[2])
 
 
 
@@ -136,10 +138,10 @@ def split_video(input_dir, output_dir, segment_list, split_params, consecutive_t
 
         for i in tqdm(range(len(test_keys))):
             frame = test_frame_dict[test_keys[i]]
-            c_frame = find_crop(frame, crop_list[2])
+            #c_frame = find_crop(frame, crop_list[2])
             subdir_name = 'triplet_t'+str(i)
-
-            frstack_to_testdir(c_frame, subdir_name, output_dir[2])
+            frame = frame[:,tl[0]:tl[0]+ts[0], tl[1]:tl[1]+ts[1],:]
+            frstack_to_testdir(frame, subdir_name, output_dir[2])
 
 
 
